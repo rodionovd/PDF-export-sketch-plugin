@@ -299,14 +299,16 @@ function alertNoArtboards(message) {
 
 
 // Return the version number for sketch — turned into a single integer
-// e.g. '3.8.5' => 385, '40.2' => 402
+// e.g. '3.8.5' => 385, '40.2' => 402, '100' => 1000, '101.2' => 1012
 function sketchVersionNumber() {
   var version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")
   var versionNumber = version.stringByReplacingOccurrencesOfString_withString(".", "") + ""
-  while (versionNumber.length != 3) {
-    versionNumber += "0"
+  if (versionNumber.length === version.length()) {
+    // Account for version numbers without a decimal part (e.g. '99', '100', etc)
+    return 10 * parseInt(versionNumber)
+  } else {
+    return parseInt(versionNumber)
   }
-  return parseInt(versionNumber)
 }
 
 // Return a JSON object from a file path
